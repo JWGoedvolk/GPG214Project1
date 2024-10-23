@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -51,6 +52,13 @@ namespace Gamekit2D
         protected PlayerInput m_PlayerInput;
         protected bool m_Transitioning;
 
+        //JW Content
+        public SceneTransitionDestination.DestinationTag CurrentTransitionDestination 
+        { 
+            get { return m_ZoneRestartDestinationTag; } 
+        }
+        [SerializeField] public SaveManager saveManager;
+
         void Awake()
         {
             if (Instance != this)
@@ -95,6 +103,8 @@ namespace Gamekit2D
         public static void TransitionToScene(TransitionPoint transitionPoint)
         {
             Instance.StartCoroutine(Instance.Transition(transitionPoint.newSceneName, transitionPoint.resetInputValuesOnTransition, transitionPoint.transitionDestinationTag, transitionPoint.transitionType));
+            var saver = FindObjectOfType(typeof(SaveManager)).GetComponent<SaveManager>();
+            saver.isSaved = false;
         }
         
 
