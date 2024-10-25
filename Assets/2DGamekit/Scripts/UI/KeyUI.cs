@@ -9,7 +9,7 @@ namespace Gamekit2D
         public GameObject keyIconPrefab;
         public string[] keyNames;
 
-        protected Animator[] m_KeyIconAnimators;
+        [SerializeField] protected Animator[] m_KeyIconAnimators;
 
         protected readonly int m_HashActivePara = Animator.StringToHash("Active");
         protected const float k_KeyIconAnchorWidth = 0.041f;

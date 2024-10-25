@@ -6,6 +6,7 @@ using System.IO;
 using System.Xml.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -123,6 +124,13 @@ public class SaveManager : MonoBehaviour
     public void SaveXML()
     {
         Debug.Log("Saving XML");
+
+        if (!Directory.Exists(folderPath))
+        {
+            Debug.LogError($"[SAVE][ERROR] Folder does not exist at {folderPath}");
+            return;
+        }
+
         GetReferences();
         isSaved = true;
         saveData = new SaveData();
@@ -134,15 +142,15 @@ public class SaveManager : MonoBehaviour
         saveData.HasKey2 = inventoryController.HasItem("Key2");
         saveData.HasKey3 = inventoryController.HasItem("Key3");
 
-        Debug.Log($"[SAVED] PlayerPosition: {playerTransform.position}");
-        Debug.Log($"[SAVED] SceneName: {sceneName}");
+        Debug.Log($"[SAVE][INFO] PlayerPosition: {playerTransform.position}");
+        Debug.Log($"[SAVE][INFO] SceneName: {sceneName}");
 
-        Debug.Log($"[SAVED] Melee Unlocked: {playerInput.MeleeAttack.Enabled}");
-        Debug.Log($"[SAVED] Ranged Unlocked: {playerInput.MeleeAttack.Enabled}");
+        Debug.Log($"[SAVE][INFO] Melee Unlocked: {playerInput.MeleeAttack.Enabled}");
+        Debug.Log($"[SAVE][INFO] Ranged Unlocked: {playerInput.MeleeAttack.Enabled}");
 
-        Debug.Log($"[SAVED] Key1 Unlocked: {inventoryController.HasItem("Key1")}");
-        Debug.Log($"[SAVED] Key2 Unlocked: {inventoryController.HasItem("Key2")}");
-        Debug.Log($"[SAVED] Key3 Unlocked: {inventoryController.HasItem("Key3")}");
+        Debug.Log($"[SAVE][INFO] Key1 Unlocked: {inventoryController.HasItem("Key1")}");
+        Debug.Log($"[SAVE][INFO] Key2 Unlocked: {inventoryController.HasItem("Key2")}");
+        Debug.Log($"[SAVE][INFO] Key3 Unlocked: {inventoryController.HasItem("Key3")}");
 
 
         XmlSerializer serializer = new XmlSerializer(typeof(SaveData));
@@ -156,6 +164,17 @@ public class SaveManager : MonoBehaviour
     public void LoadXML()
     {
         Debug.Log("Loading Save Data");
+
+        if (!Directory.Exists(folderPath))
+        {
+            Debug.LogError($"[LOAD][ERROR] Folder does not exist at {folderPath}");
+            return;
+        }
+        if (!File.Exists(fullPath))
+        {
+            Debug.LogError($"[LOAD][ERROR] Save file does not exist at {fullPath}");
+            return;
+        }
 
         XmlSerializer serializer = new XmlSerializer(typeof(SaveData));
 
@@ -172,15 +191,16 @@ public class SaveManager : MonoBehaviour
 
     public IEnumerator LoadXMLScene()
     {
+        yield return StartCoroutine(ScreenFader.FadeSceneOut(ScreenFader.FadeType.Loading));
         yield return SceneManager.LoadSceneAsync(saveData.SceneName);
-        yield return playerInput = FindAnyObjectByType(typeof(PlayerInput)).GetComponent<PlayerInput>();
+        yield return StartCoroutine(ScreenFader.FadeSceneIn());
+        playerInput = FindAnyObjectByType(typeof(PlayerInput)).GetComponent<PlayerInput>();
         playerInput.transform.position = saveData.PlayerPosition;
         inventoryController = playerInput.gameObject.GetComponent<InventoryController>();
         if (saveData.HasKey1) inventoryController.AddItem("Key1");
         if (saveData.HasKey2) inventoryController.AddItem("Key2");
         if (saveData.HasKey3) inventoryController.AddItem("Key3");
         if (saveData.MeleeUnlocked) inventoryController.AddItem("Gun");
-
 
         yield return null;
     }
