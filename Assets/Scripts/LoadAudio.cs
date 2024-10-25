@@ -18,6 +18,7 @@ public class LoadAudio : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this);
+        AssetBundle.LoadFromFile(fullPath);
 
         fullPath = Path.Combine(folderPath, fileName);
         if (!Directory.Exists(folderPath))

@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 3875377516
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: obstacles
+      Dependencies: {}
