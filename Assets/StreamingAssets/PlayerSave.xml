@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SaveData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <playerPosition>
-    <x>11.4649086</x>
-    <y>1.28395319</y>
-  </playerPosition>
-  <SceneTag>A</SceneTag>
+  <PlayerPosition>
+    <x>95.47758</x>
+    <y>21.0040588</y>
+  </PlayerPosition>
+  <SceneName>Zone3</SceneName>
+  <MeleeUnlocked>false</MeleeUnlocked>
+  <RangeUnlocked>false</RangeUnlocked>
+  <HasKey1>true</HasKey1>
+  <HasKey2>false</HasKey2>
+  <HasKey3>false</HasKey3>
 </SaveData>

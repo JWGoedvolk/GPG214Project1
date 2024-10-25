@@ -11930,18 +11930,6 @@ Transform:
   - {fileID: 1764303544}
   m_Father: {fileID: 1526326366}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &230536256 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114375775778562426, guid: 06c5c56d99c9e194db056e41d8b8f99b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1933688369}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0892e1c9a7e8e804ab70eb0ba2066711, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &247976514
 GameObject:
   m_ObjectHideFlags: 0
@@ -47636,9 +47624,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 1141565057}
-  sceneController: {fileID: 230536256}
-  sceneTag: B
-  currentDestinationTag: 0
+  sceneName: Zone1
+  playerInput: {fileID: 0}
+  inventoryController: {fileID: 0}
+  image: {fileID: 0}
+  saveData:
+    PlayerPosition: {x: 0, y: 0}
+    SceneName: 
+    MeleeUnlocked: 0
+    RangeUnlocked: 0
+    HasKey1: 0
+    HasKey2: 0
+    HasKey3: 0
   isSaved: 0
   playerSaveName: PlayerSave.xml
   folderPath: C:/Users/janwi/Documents/SAEUnity/GPG214/GPG214Project1/Assets/StreamingAssets

@@ -102,9 +102,11 @@ namespace Gamekit2D
 
         public static void TransitionToScene(TransitionPoint transitionPoint)
         {
-            Instance.StartCoroutine(Instance.Transition(transitionPoint.newSceneName, transitionPoint.resetInputValuesOnTransition, transitionPoint.transitionDestinationTag, transitionPoint.transitionType));
             var saver = FindObjectOfType(typeof(SaveManager)).GetComponent<SaveManager>();
-            saver.isSaved = false;
+            saver.sceneName = transitionPoint.newSceneName;
+            saver.SaveXML();
+            Instance.StartCoroutine(Instance.Transition(transitionPoint.newSceneName, transitionPoint.resetInputValuesOnTransition, transitionPoint.transitionDestinationTag, transitionPoint.transitionType));
+            
         }
         
 
@@ -113,7 +115,7 @@ namespace Gamekit2D
             return Instance.GetDestination(destinationTag);
         }
 
-        protected IEnumerator Transition(string newSceneName, bool resetInputValues, SceneTransitionDestination.DestinationTag destinationTag, TransitionPoint.TransitionType transitionType = TransitionPoint.TransitionType.DifferentZone)
+        public IEnumerator Transition(string newSceneName, bool resetInputValues, SceneTransitionDestination.DestinationTag destinationTag, TransitionPoint.TransitionType transitionType = TransitionPoint.TransitionType.DifferentZone)
         {
             m_Transitioning = true;
             PersistentDataManager.SaveAllData();

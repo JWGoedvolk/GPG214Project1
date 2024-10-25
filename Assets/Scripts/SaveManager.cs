@@ -1,27 +1,34 @@
 using Gamekit2D;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SaveManager : MonoBehaviour
 {
+    [Serializable]
     public class SaveData
     {
-        public Vector2 playerPosition;
-        public string SceneTag;
+        // Position data
+        public Vector2 PlayerPosition;
+        public string SceneName;
 
+        // Inventory data
+        public bool MeleeUnlocked = false;
+        public bool RangeUnlocked = false;
+        public bool HasKey1 = false;
+        public bool HasKey2 = false;
+        public bool HasKey3 = false;
+
+        // Constructors
         public SaveData()
         {
 
-        }
-
-        public SaveData(Vector2 playerPosition, string sceneTag)
-        {
-            this.playerPosition = playerPosition;
-            SceneTag = sceneTag;
         }
     }
 
@@ -29,9 +36,9 @@ public class SaveManager : MonoBehaviour
 
     [Header("Object References")]
     [SerializeField] private Transform playerTransform;
-    [SerializeField] private SceneController sceneController;
-    [SerializeField] private string sceneTag;
-    [SerializeField] private SceneTransitionDestination.DestinationTag currentDestinationTag;
+    [SerializeField] public string sceneName;
+    [SerializeField] public PlayerInput playerInput;
+    [SerializeField] public InventoryController inventoryController;
 
     [Header("Save Data")]
     [SerializeField] private SaveData saveData = new SaveData();
@@ -48,6 +55,8 @@ public class SaveManager : MonoBehaviour
         fullPath = Path.Combine(folderPath, playerSaveName);
 
         DontDestroyOnLoad(gameObject);
+
+        // TODO: Load save data if file exists
     }
 
     // Update is called once per frame
@@ -55,20 +64,15 @@ public class SaveManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log(sceneController.initialSceneTransitionDestination.destinationTag);
+            //Debug.Log(sceneController.initialSceneTransitionDestination.destinationTag);
+            LoadXML();
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             SaveXML();
         }
 
-        if (SceneController.Transitioning)
-        {
-            do
-            {
-                SaveXML();
-            } while (!isSaved);
-        }
+        
     }
 
     public string GetSceneStringFromTag(SceneTransitionDestination.DestinationTag destination)
@@ -111,8 +115,9 @@ public class SaveManager : MonoBehaviour
 
     public void GetReferences()
     {
-        playerTransform = FindObjectOfType(typeof(PlayerCharacter)).GetComponent<Transform>();
-        sceneController = FindObjectOfType(typeof(SceneController)) as SceneController;
+        playerInput = FindAnyObjectByType<PlayerInput>();
+        playerTransform = playerInput.transform;
+        inventoryController = playerInput.gameObject.GetComponent<InventoryController>();
     }
 
     public void SaveXML()
@@ -120,8 +125,25 @@ public class SaveManager : MonoBehaviour
         Debug.Log("Saving XML");
         GetReferences();
         isSaved = true;
-        saveData.playerPosition = playerTransform.position;
-        saveData.SceneTag = GetSceneStringFromTag(sceneController.CurrentTransitionDestination);
+        saveData = new SaveData();
+        saveData.PlayerPosition = playerTransform.position;
+        saveData.SceneName = sceneName;
+        saveData.MeleeUnlocked = playerInput.MeleeAttack.Enabled;
+        saveData.RangeUnlocked = playerInput.RangedAttack.Enabled;
+        saveData.HasKey1 = inventoryController.HasItem("Key1");
+        saveData.HasKey2 = inventoryController.HasItem("Key2");
+        saveData.HasKey3 = inventoryController.HasItem("Key3");
+
+        Debug.Log($"[SAVED] PlayerPosition: {playerTransform.position}");
+        Debug.Log($"[SAVED] SceneName: {sceneName}");
+
+        Debug.Log($"[SAVED] Melee Unlocked: {playerInput.MeleeAttack.Enabled}");
+        Debug.Log($"[SAVED] Ranged Unlocked: {playerInput.MeleeAttack.Enabled}");
+
+        Debug.Log($"[SAVED] Key1 Unlocked: {inventoryController.HasItem("Key1")}");
+        Debug.Log($"[SAVED] Key2 Unlocked: {inventoryController.HasItem("Key2")}");
+        Debug.Log($"[SAVED] Key3 Unlocked: {inventoryController.HasItem("Key3")}");
+
 
         XmlSerializer serializer = new XmlSerializer(typeof(SaveData));
 
@@ -133,6 +155,33 @@ public class SaveManager : MonoBehaviour
 
     public void LoadXML()
     {
-        Debug.Log("NYI");
+        Debug.Log("Loading Save Data");
+
+        XmlSerializer serializer = new XmlSerializer(typeof(SaveData));
+
+        using (StreamReader reader = new StreamReader(fullPath))
+        {
+            saveData = (SaveData)serializer.Deserialize(reader);
+        }
+
+        Debug.Log("Loaded: " + saveData.PlayerPosition);
+        Debug.Log("Loaded: " + saveData.SceneName);
+
+        StartCoroutine(LoadXMLScene());
+    }
+
+    public IEnumerator LoadXMLScene()
+    {
+        yield return SceneManager.LoadSceneAsync(saveData.SceneName);
+        yield return playerInput = FindAnyObjectByType(typeof(PlayerInput)).GetComponent<PlayerInput>();
+        playerInput.transform.position = saveData.PlayerPosition;
+        inventoryController = playerInput.gameObject.GetComponent<InventoryController>();
+        if (saveData.HasKey1) inventoryController.AddItem("Key1");
+        if (saveData.HasKey2) inventoryController.AddItem("Key2");
+        if (saveData.HasKey3) inventoryController.AddItem("Key3");
+        if (saveData.MeleeUnlocked) inventoryController.AddItem("Gun");
+
+
+        yield return null;
     }
 }
