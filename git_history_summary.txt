@@ -1,0 +1,11 @@
+* 9734d9d (HEAD -> main, origin/main, origin/HEAD) Reactivated audio loader object
+* 4907bab Removed unused object pool script
+* a8852dd Experemented with object pooling script
+* 0b7257b Added AssetBundle Building And Loading
+* eff44af Added Audio Loading
+* 05ceb38 Added A Loadable Sprite
+* a21808a Added Key Fix
+* e5687e0 Fixed XML Save And Load
+* 1bbc329 Basic Broken XML Saving
+* 68234eb Initial Commit of Scene
+* 14d3d3a Initial commit
