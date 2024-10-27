@@ -12574,7 +12574,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 2
   Loop: 1
   Mute: 0
@@ -20532,7 +20532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 574797426}
   - component: {fileID: 574797425}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: AssetBundleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20558,6 +20558,21 @@ MonoBehaviour:
   bundlePrefab: {fileID: 0}
   bundleMaterial: {fileID: 0}
   bundleTexture: {fileID: 0}
+  curTime: 0.1
+  resetTime: 1
+  poolSize: 100
+  pool:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  poolIndex: 0
 --- !u!4 &574797426
 Transform:
   m_ObjectHideFlags: 0
@@ -20567,7 +20582,7 @@ Transform:
   m_GameObject: {fileID: 574797424}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.48, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -15,13 +15,56 @@ public class LoadAssetBundleData : MonoBehaviour
     [SerializeField] GameObject bundlePrefab;
     [SerializeField] Material bundleMaterial;
     [SerializeField] Texture2D bundleTexture;
+
+    [Header("Timer")]
+    [SerializeField] private float curTime = 2f;
+    [SerializeField] private float resetTime = .1f;
+
+    [Header("Object Pool")]
+    [SerializeField] private int poolSize = 10;
+    [SerializeField] public GameObject[] pool;
+    [SerializeField] private int poolIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
         fullPath = Path.Combine(folderPath, fileName);
 
         LoadBundleData();
+
+        pool = new GameObject[poolSize];
+        if (bundlePrefab != null )
+        {
+            for (int i = 0; i < pool.Length; i++)
+            {
+                pool[i] = Instantiate(bundlePrefab);
+                pool[i].transform.position = new Vector2(Random.Range(transform.position.x - 1, transform.position.x + 1), Random.Range(transform.position.y - 1, transform.position.y + 1));
+                pool[i].SetActive(false);
+            }
+        }
         SpawnPrefab();
+    }
+
+    private void Update()
+    {
+        curTime -= Time.deltaTime;
+        if (curTime <= 0f)
+        {
+            curTime = resetTime;
+            
+            if(poolIndex >= poolSize)
+            {
+                poolIndex = 0;
+                pool[poolIndex].SetActive(true); // Test for optimisation
+                pool[poolIndex].transform.position = new Vector2(Random.Range(transform.position.x - 3, transform.position.x + 3), Random.Range(transform.position.y - 1, transform.position.y + 1));
+            }
+            else
+            {
+                pool[poolIndex].SetActive(true);
+                pool[poolIndex].transform.position = new Vector2(Random.Range(transform.position.x - 3, transform.position.x + 3), Random.Range(transform.position.y - 1, transform.position.y + 1));
+                poolIndex++;
+            }
+            
+        }
     }
 
     public void LoadBundleData()
@@ -44,6 +87,7 @@ public class LoadAssetBundleData : MonoBehaviour
         if (bundlePrefab != null)
         {
             var spawned = Instantiate(bundlePrefab);
+            spawned.transform.position = new Vector2(Random.Range(transform.position.x - 1, transform.position.x + 1), Random.Range(transform.position.y - 1, transform.position.y + 1));
         }
     }
 }
